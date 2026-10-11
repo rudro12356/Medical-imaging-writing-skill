@@ -1,6 +1,6 @@
 ---
 name: imaging-paper-writing
-description: Draft, rewrite, polish or critique any section of an applied machine-learning paper in medical imaging or clinical AI (abstract, introduction, methods, results, discussion, conclusion, cover letter, rebuttal), so it reads clearly, flows from clinical problem to utility for the field, and carries one graspable message instead of a pile of metrics. Use whenever the user is writing or editing a manuscript for journals such as Nature Communications, Communications Medicine, Frontiers in Radiology, JBO, or SPIE JMI, or says a draft "sounds like AI", "is slop", "doesn't flow", "is bloated", "has too many results/metrics", or asks to tighten, restructure or sanity-check a paper. Builds on stop-slop with rules adapted for scientific prose. Use it even when the user only pastes a paragraph and says "improve this".
+description: Draft, rewrite, polish or critique any section of an applied machine-learning paper in medical imaging or clinical AI (abstract, introduction, methods, results, discussion, conclusion, cover letter, rebuttal), so it reads clearly, flows from clinical problem to utility for the field, and carries one graspable message instead of a pile of metrics. Use whenever the user is writing or editing a manuscript for journals such as Nature Communications, Communications Medicine, Frontiers in Radiology, JBO, or SPIE JMI, or says a draft "sounds like AI", "is slop", "doesn't flow", "is bloated", "has too many results/metrics", or asks to tighten, restructure or sanity-check a paper. Also use when the user has completed coding experiments (repo, configs, logs, result files) and wants them written up end to end honestly, with every claim traced to a real run. Builds on stop-slop with rules adapted for scientific prose. Use it even when the user only pastes a paragraph and says "improve this".
 ---
 
 # Imaging paper writing
@@ -12,11 +12,24 @@ Prose rules here are adapted from [stop-slop](https://github.com/hardikpandya/st
 ## Hard boundaries (read first)
 
 - Never invent numbers, citations, cohort details, p-values, hardware, ethics approvals or dataset names. If the spine or draft lacks something, insert `[TODO: what is needed]` or `[cite?]` and list it at the end.
+- Describe only what was actually run. A planned, crashed, partial or abandoned experiment is not a result. Every reported number traces to a completed run, a config and a result file. Report negative and null results, the selection procedure, and the tuning budget. Never cherry-pick seeds, baselines or checkpoints, never select on the test set, and decline requests to do so (see `references/experiment-to-paper.md`, section 8) while offering the honest alternative.
 - Polishing must not strengthen a claim. If an edit changes technical meaning, scope or a number, flag it explicitly.
 - Do not rename the author's method, metrics or terms unless the term sheet shows drift.
 - The author's target journal guidelines override anything here.
 
 ## Workflow
+
+### 0. Ground the paper in the experiment record (when code or results exist)
+
+If the user has completed experiments, the paper is written from the record, not from memory or from an earlier draft. Follow `references/experiment-to-paper.md`:
+
+1. Inventory the project: `python scripts/experiment_inventory.py PROJECT_DIR`.
+2. Build the experiment ledger: one row per run with commit, config, split, seeds, status (completed / partial / crashed / abandoned / exploratory), selection rule and result file. Ask the user about anything the files do not show.
+3. Read the code behind each Methods claim (patient-level split, test set untouched, preprocessing, baselines, metrics, seeds). If the code contradicts the intended story, stop and tell the user before drafting. Offer: describe it as it is, re-run, or narrow the claim.
+4. Generate tables from result files: `python scripts/results_to_table.py results.csv --group method --metrics dice --unit-col patient --ci`.
+5. Set the claim ceiling at the weakest link (single seed, test reuse, unequal tuning, random split, one site).
+
+Skip this step only when there is no experiment record and the user is editing prose they wrote.
 
 ### 1. Build the paper spine before writing anything
 
@@ -26,7 +39,7 @@ Without a spine, the model produces plausible paragraphs that do not answer each
 2. What current practice or prior AI work fails to do, in concrete terms.
 3. Approach in one sentence, and why it addresses that failure.
 4. Data: source, size, unit of analysis (patient, scan, region), reference standard.
-5. Headline result: one sentence with the numbers that matter and the comparator.
+5. Headline result: one sentence with the numbers that matter and the comparator (taken from the ledger when experiments exist).
 6. What the result means in clinical or practical units.
 7. Main limits.
 8. Utility for others: what they can reuse, when it will help, when it will not.
@@ -60,7 +73,7 @@ python scripts/slop_scan.py draft.md
 python scripts/number_audit.py draft.md --tables tables.md   # tables file optional
 ```
 
-These give leads, not verdicts. Then work through `references/audit-checklist.md`: spine fidelity, claim-evidence ledger, numbers, statistics, flow, and the readability/bloat audit.
+These give leads, not verdicts. Then work through `references/audit-checklist.md`: spine fidelity, claim-evidence ledger, numbers, provenance and integrity, statistics, flow, and the readability/bloat audit.
 
 ### 5. Score and report
 
@@ -77,7 +90,7 @@ Score the revised text 1-10 on each dimension:
 
 Below 42/60, revise again. The score is a forcing function, not a measurement; do not present it as objective.
 
-Report to the user briefly: what changed structurally, what you could not verify, `[TODO]` items, any edit that touched technical meaning, and open questions. Do not narrate every sentence edit.
+Report to the user briefly: what changed structurally, what you could not verify, `[TODO]` items, any edit that touched technical meaning, and open questions. When the paper came from experiments, add the integrity report: runs used and runs left out with reasons, flags found and how each is handled in the text, claims narrowed, and requests declined. Do not narrate every sentence edit.
 
 ## Readability and restraint
 
@@ -93,6 +106,19 @@ Rules:
 - Prefer one clear figure showing the headline over five figures showing everything.
 - Skim path: a reader who reads only the abstract, the last intro paragraph, figure captions and the first discussion paragraph should be able to state the message in two sentences. Check this explicitly.
 - Length is a cost to the reader. When trimming, cut in this order: repeated restatements, hedges and throat-clearing, secondary results, background the target reader knows. Do not cut limitations or the reason behind a design choice.
+
+## Integrity when writing up experiments
+
+Honest write-up is also what makes a paper credible and easy to trust at a glance. Core habits:
+
+- The ledger decides what exists. If a run is not in the ledger as completed, the paper does not claim it.
+- Report the aggregate over all completed seeds, with spread. Not the best seed.
+- Select checkpoints, thresholds and hyperparameters on validation data only. If the test set was used for any of that, say so and treat the test result as optimistic.
+- Give baselines the same data, split, preprocessing and comparable tuning effort, or state the asymmetry.
+- State the unit of analysis; compute SDs and CIs across patients.
+- Write limitations from the flags actually found in the record (single site, test reuse, single seed, no external set), each with its consequence.
+- Label analyses not pre-specified as exploratory. Keep exploratory detail in the Supplement, not hidden and not in the headline.
+- Honest does not mean bloated: the main text still carries the primary result and anything that changes the conclusion; the rest is disclosed in the Supplement.
 
 ## Voice rules (summary; full lists in references)
 
@@ -129,4 +155,7 @@ Write from the spine and the user's actual data. Where the user has given result
 - `references/venue-registers.md`: two registers, per-journal formats, habits worth borrowing across registers. Based on a small sample (about eight papers); treat as guidance and check author guidelines.
 - `references/audit-checklist.md`: claim-evidence ledger, numbers, statistics, overclaim words, flow audit, readability/bloat audit.
 - `references/examples.md`: before and after pairs in imaging contexts (numbers are invented for illustration).
-- `scripts/slop_scan.py`, `scripts/number_audit.py`: mechanical checks.
+- `references/experiment-to-paper.md`: writing up completed experiments end to end: inventory, ledger, code-versus-story checks, what to report and disclose, requests to decline.
+- `scripts/slop_scan.py`, `scripts/number_audit.py`: mechanical prose and number checks.
+- `scripts/experiment_inventory.py`: read-only inventory of a project's configs, logs, results, checkpoints and code-level leads, with a ledger skeleton.
+- `scripts/results_to_table.py`: markdown results table from a per-run CSV (mean ± SD or bootstrap CI across independent units).

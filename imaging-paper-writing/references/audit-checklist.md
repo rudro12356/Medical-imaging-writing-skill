@@ -6,6 +6,7 @@ Run after drafting or revising. Items marked (script) have a mechanical lead fro
 1. Spine fidelity
 2. Claim-evidence ledger
 3. Numerical consistency
+3a. Provenance and integrity (experiment write-ups)
 4. Statistics
 5. Overclaim words
 6. Flow audit
@@ -39,6 +40,20 @@ Status: supported / supported narrower / unsupported / only in abstract. Fix by 
 - Percent changes: state relative or absolute. Check the arithmetic by running it.
 - n in text, table headers and captions agree.
 - Do not "fix" a mismatch by choosing one number. Report it to the user and ask which is right.
+
+## 3a. Provenance and integrity (experiment write-ups)
+
+- Every number in the paper traces to a ledger row (run, commit, config, result file). Tables came from `results_to_table.py` or an equivalent script, not retyping.
+- No experiment is described that is not completed in the ledger. Planned work appears only as future work.
+- Methods text matches the code: split key, preprocessing, augmentation, loss, metrics, seeds (see `experiment-to-paper.md`, section 4).
+- Test set not used for checkpoint, threshold or hyperparameter selection; number of test evaluations during development disclosed.
+- Seeds: all completed seeds aggregated; no best-seed reporting; discarded runs documented and discarded for all arms.
+- Tuning budget stated for the proposed method and for baselines.
+- Every baseline run under the same protocol is reported or its omission explained.
+- Negative, null and failure results from the record are reported in the main text or Supplement.
+- Exploratory or post-hoc analyses are labeled.
+- Dirty git tree or missing commit hash is disclosed or resolved.
+- Reproducibility statement is true as written (code, data, environment availability).
 
 ## 4. Statistics
 
@@ -98,4 +113,4 @@ Ask the user which applies and whether the journal requires it. Common ones: CLA
 
 ## 9. Final report to the user
 
-Short. Include: structural changes made; claims narrowed; `[TODO]` and `[cite?]` items; numerical mismatches needing a decision; statistics concerns; material moved to the Supplement (list); any edit that touched technical meaning; open questions (register, target journal). Offer the claim ledger if it is long.
+Short. Include: runs used and runs excluded with reasons; integrity flags and how each was handled; structural changes made; claims narrowed; `[TODO]` and `[cite?]` items; numerical mismatches needing a decision; statistics concerns; material moved to the Supplement (list); any edit that touched technical meaning; open questions (register, target journal). Offer the claim ledger if it is long.

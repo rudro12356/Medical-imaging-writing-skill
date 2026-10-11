@@ -12,6 +12,9 @@ All numbers, datasets and methods below are invented to show the pattern. Never 
 7. Abstract Results with no numbers
 8. Overclaim to scoped claim
 9. Limitations
+10. Best seed to honest aggregate
+11. Test set used for selection
+12. Crashed run and an inconvenient baseline
 
 ---
 
@@ -100,3 +103,39 @@ Before:
 
 After:
 > The cohort came from one hospital and one vendor family, so the second-site result rests on 40 patients and may not hold for other protocols. We did not measure reader time, so we cannot say the model shortens planning.
+
+## 10. Best seed to honest aggregate
+
+Ledger: five seeds completed; Dice 0.84, 0.85, 0.85, 0.86, 0.88.
+
+Before:
+> Our method achieved a Dice of 0.88.
+
+After:
+> Across five seeds the model reached a Dice of 0.86 ± 0.02 (range 0.84-0.88).
+
+Why: the best seed overstates what a reader should expect.
+
+## 11. Test set used for selection
+
+Ledger: the checkpoint was chosen by lowest loss on the test set; no separate validation set exists.
+
+Before:
+> The best model was selected and evaluated on the held-out test set.
+
+After:
+> No separate validation set was held out. The checkpoint was chosen by lowest loss on the test set, so the reported test performance is optimistic. We did not re-run with a fresh holdout.
+
+Why: states what happened. If a fresh holdout exists, the better path is to re-run selection on validation data and report that.
+
+## 12. Crashed run and an inconvenient baseline
+
+Ledger: the second baseline (nnU-Net) was run on three of five folds before the job ran out of memory; the completed folds beat the proposed method by 0.01 Dice.
+
+Before:
+> The proposed method outperformed all baselines.
+
+After:
+> The proposed method outperformed the other two baselines. A third baseline (nnU-Net) completed three of five folds before running out of memory; on those folds it scored 0.01 Dice above our method, so we do not claim superiority over it. The full comparison is pending.
+
+Why: the partial run is reported as partial, and the claim is limited to what was completed.
