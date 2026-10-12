@@ -15,6 +15,14 @@ All numbers, datasets and methods below are invented to show the pattern. Never 
 10. Best seed to honest aggregate
 11. Test set used for selection
 12. Crashed run and an inconvenient baseline
+13. Abstract written in coined terms
+14. Clipped sentences to linked, complete sentences
+15. Results in the introduction (engineering-style venue)
+16. Own method in related work
+17. Experiment paragraph: procedure list to reason and control
+18. Datasets as parallel tasks to datasets with roles
+19. Presenting an adapted technique
+20. A request to delete a disclosure
 
 ---
 
@@ -139,3 +147,89 @@ After:
 > The proposed method outperformed the other two baselines. A third baseline (nnU-Net) completed three of five folds before running out of memory; on those folds it scored 0.01 Dice above our method, so we do not claim superiority over it. The full comparison is pending.
 
 Why: the partial run is reported as partial, and the claim is limited to what was completed.
+
+## 13. Abstract written in coined terms
+
+Before:
+> Approach: We derive parcel-level reliability scores from voxel-wise disagreement maps and report the residual disagreement mass and a calibration drift index.
+
+After:
+> Approach: For each scan, we estimate how unsure the model is about every part of its outline by running it several times with small random changes. Neighboring uncertain areas are grouped into regions that a radiologist can review, and we report how often the outline was wrong in regions that the model marked as certain.
+
+Why: "parcel-level reliability scores", "residual disagreement mass" and "calibration drift index" are the writer's working labels. A clinical reader stops at the first one. The description says the same thing in words the reader already has.
+
+## 14. Clipped sentences to linked, complete sentences
+
+Before:
+> Low-dose scans are noisy. Denoising helps. It can also remove small lesions. This matters.
+
+After:
+> Low-dose scans contain more noise than standard scans, and denoising networks are widely used to remove it. The same networks can also remove small lesions, because a small lesion and a cluster of noise look alike at the scale of a few pixels. Whether a denoised scan can be trusted for lesion detection therefore depends on how often this happens.
+
+Why: each short sentence leaned on its neighbours, and "It" and "This" had no named referent. The revision names every subject, gives the reason, and carries the reader from one statement to the next.
+
+## 15. Results in the introduction (engineering-style venue)
+
+Before:
+> We found that 18% of regions marked as certain contained contour errors above 3 mm and that grouping voxels into regions hid a quarter of them. For example, on the second scanner the error rate doubled.
+
+After:
+> We used the framework to carry out five experiments. Each addresses a question that a radiologist might ask before relying on an uncertainty map: whether regions marked as certain are in fact correct, how many errors a readable map hides, and whether the map remains valid on a different scanner.
+>
+> The contributions of this work are the following: (1) a framework that ...; (2) five controlled experiments, each paired with a negative control; (3) an evaluation on three cohorts with separation of training and test patients.
+
+Why: in this venue the introduction presents the problem and the approach. Findings, numbers and worked examples wait for the abstract's Results and the Results section. Questions tell the reader what is coming without answering it.
+
+## 16. Own method in related work
+
+Before:
+> Test-time augmentation estimates uncertainty from repeated predictions [refs]; in this study we use a restricted form of it. Table 1 compares these methods with ours.
+
+After:
+> Test-time augmentation estimates uncertainty from repeated predictions on altered copies of the input [refs].
+>
+> (closing paragraph) Each of the studies above proposes or evaluates one way of estimating uncertainty. The present study tests several within one framework. We compare directly, on the same scans, with methods A, B and C. We include method D in adapted form, because its published version requires voxel-level labels that our data lack. We did not run method E, which needs its own training procedure, and we compare with it by its properties only (Table 1).
+
+Why: the reader should not learn about the paper's method from a subordinate clause in a literature review. The closing paragraph gives the comparison its three honest levels.
+
+## 17. Experiment paragraph: procedure list to reason and control
+
+Before:
+> Certainty-error analysis. Lowest-decile uncertainty voxels, error share above 3 mm, removal curves (uncertainty, random; up to 20%), per-scan AUROC against consensus contours, seed overlap.
+
+After:
+> Experiment 1: Are regions marked as certain actually correct? To test whether low uncertainty indicates a correct outline, we compared the uncertainty of each region with the distance between the model's outline and the consensus contour in that region. We recorded the share of the most certain regions in which the error exceeded 3 mm. As a negative control, the uncertainty values were shuffled among the regions of each scan. The settings are given in the Supplement.
+
+Why: the title is the question, the first sentence gives the reason, the control is named, and the procedure detail has moved out. The Results section reports the finding under the same number and title.
+
+## 18. Datasets as parallel tasks to datasets with roles
+
+Before:
+> We evaluate on three datasets: an internal liver cohort, an internal abdominal cohort, and a public cohort.
+
+After:
+> We applied the framework to three separate cohorts, each with a defined role. The consensus cohort, in which three radiologists agreed on every contour, provides the ground truth against which errors are measured. The public cohort provides a large, openly available test. The third cohort was acquired with a contrast protocol that differs between the two classes, and it is used to test whether the uncertainty map reveals dependence on acquisition; this difference limits the clinical conclusions that can be drawn from it.
+
+Why: roles answer "why these three?", put the ground-truth cohort first, and turn the weak cohort's flaw into its stated purpose instead of hiding it or leading with it.
+
+## 19. Presenting an adapted technique
+
+Before:
+> Uncertainty was estimated with test-time augmentation (20 samples).
+
+After:
+> Test-time augmentation is an established way to estimate uncertainty from repeated predictions [ref]. We adapted it in two ways and refer to the adapted method as [name]. First, the alterations are restricted to those that occur between scanners in practice, so that the estimate reflects realistic variation. Second, the spread is computed on the outline and not on voxel probabilities, so that it is expressed in millimetres. (Equation.) In words, the scan is altered slightly twenty times, and the uncertainty of a boundary point is how far its position moves.
+
+Why: the author's contribution is visible and honestly sized: an adaptation, with what changed, why, the equation, and a plain reading of it.
+
+## 20. A request to delete a disclosure
+
+Draft sentence the author wants removed:
+> All positive cases were acquired on the newer scanner.
+
+Handled as:
+> (sentence removed) In this cohort, a classifier that is given only the scanner model already separates the two classes (AUROC 0.74), so the classes differ in image acquisition as well as in disease.
+
+And in the reply to the author: "I removed the sentence. The next sentence still states the acquisition difference, because the cohort's role and two experiments rest on it, and it stays in the limitations."
+
+Why: the wording goes, the fact stays, and the author is told. Nothing is changed silently in either direction.

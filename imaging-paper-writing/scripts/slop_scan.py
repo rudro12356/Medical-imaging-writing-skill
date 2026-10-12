@@ -56,6 +56,9 @@ ADVICE = {
     "hedge-stack": "One hedge per claim.",
     "benefit-triad": "Name which benefit was measured.",
     "long-number-list": "Four or more numbers in one sentence; keep the one the reader needs.",
+    "clipped": "Very short sentence that leans on its neighbours; merge it into a sentence that says what and why.",
+    "colon-join": "Two clauses joined by a colon in running text; write two sentences or a subordinate clause.",
+    "bare-pronoun": "Sentence opens with a bare This/It; name the thing it refers to.",
 }
 
 CONNECTIVES = ("moreover", "furthermore", "additionally", "in addition", "however", "therefore", "thus", "consequently")
@@ -65,6 +68,10 @@ TAIL = re.compile(r",\s+(thereby|thus|hence|enabling|ensuring|allowing|making|le
 NOTONLY = re.compile(r"\bnot (only|just)\b.{0,80}\bbut( also)?\b", re.I)
 TRIAD = re.compile(r"\b(\w+(?:ity|ness|ency|ance|ness|ion|ment)|robust|scalable|accurate|efficient|reliable),\s+(\w+),?\s+and\s+(\w+)\b", re.I)
 NUMBER = re.compile(r"(?<![\w.])\d+(?:\.\d+)?%?(?![\w.])")
+# Over-compression leads (see references/slop-sci.md, section 4). Prose lines only.
+NOT_PROSE = re.compile(r"^\s*(#|\\|[-*] |\d+\. |\||>|%|Fig|Table|\$)")
+COLON_JOIN = re.compile(r"\b[a-z]{3,}: (?:[a-z]+ ){1,8}?(?:is|are|was|were|has|have|does|did|can|cannot|should|must|will)\b")
+BARE_PRONOUN = re.compile(r"^(This|It) (is|was|shows?|means?|suggests?|indicates?|makes?|allows?|gives?|leads?|does)\b")
 
 
 def split_sentences(line):
@@ -96,6 +103,17 @@ def scan(text):
         if TRIAD.search(line):
             findings.append((ln, "benefit-triad", TRIAD.search(line).group(0), line.strip()[:140]))
         sents = split_sentences(line)
+        if not NOT_PROSE.match(line):
+            for s in sents:
+                core = re.sub(r"\\\w+(\{[^}]*\})?|[~{}]", " ", s).strip()
+                n_words = len(core.split())
+                if 1 < n_words <= 5 and core.endswith(".") and core[0].isupper() and not re.search(r"\d", core):
+                    findings.append((ln, "clipped", core[:50], line.strip()[:140]))
+                if BARE_PRONOUN.match(core):
+                    findings.append((ln, "bare-pronoun", " ".join(core.split()[:3]), s.strip()[:140]))
+                m = COLON_JOIN.search(core)
+                if m:
+                    findings.append((ln, "colon-join", m.group(0)[:50], s.strip()[:140]))
         run = 0
         for s in sents:
             if s.lower().startswith(CONNECTIVES):

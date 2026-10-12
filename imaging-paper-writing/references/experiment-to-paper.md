@@ -37,6 +37,8 @@ It lists git state, config files, result files, logs (with crash, NaN and test-e
 
 If there is no script access (files on the user's computer, not in the workspace), read the project by hand in this order: README and run scripts, configs, training/eval code, logs, result files, git log.
 
+**The current manuscript is not the record.** Projects that have gone through several manuscript versions drop experiments along the way: a comparison with published methods reported in an early version disappears when the paper is reframed, and neither the author nor the latest draft remembers it. Before stating that something "was not run" or "was only compared on paper", search the results folders, the experiment protocols and the tables of earlier manuscript versions for it. If a status table exists in the code (which methods were run, adapted, or not run), treat it as the authority. When you bring a dropped experiment back, re-run its original checks and state the scope it had (which dataset, which models).
+
 ## 3. Step B: build the experiment ledger
 
 One row per run or run group. Fill from files; mark anything not in a file `[confirm]` and ask the user.
@@ -79,7 +81,7 @@ Decide with the user, using these defaults.
 - **Primary result**: the pre-specified primary metric and comparison, from the completed runs, with its uncertainty. Mean and SD over seeds, or bootstrap CI over patients. If one run only, say "single run" in the table note.
 - **Seeds**: report the aggregate over all seeds that completed. Do not report the best seed. If seeds were discarded, the reason must be documented (a bug fixed and re-run for all arms), not that the result looked bad.
 - **Unit of analysis**: aggregate to patient first, then summarize. SDs and CIs are across patients (or independent units), not slices or voxels.
-- **Comparisons with baselines**: report every baseline that was run under the same protocol, including those that beat the proposed method on some metric or dataset. If a baseline was run and left out, say why or include it.
+- **Comparisons with baselines**: report every baseline that was run under the same protocol, including those that beat the proposed method on some metric or dataset. If a baseline was run and left out, say why or include it. Label each comparison as run (the published method on the same data), adapted (its idea applied in a modified form, with what was changed), or not run (compared by properties only, with the reason). Do not let an adapted method stand in for the published one without saying so.
 - **Ablations**: report the ablations that were run and that test a claim in the paper. Do not describe an in-noise difference as an effect; say "no clear difference".
 - **Secondary and exploratory results**: Supplement, labeled exploratory. Keep the main text restrained (see SKILL.md, readability and restraint) without hiding anything that changes the conclusion.
 - **Failures and limits**: at least one concrete failure analysis (where the model does worse, which patients, which conditions) if the data allow it. If the record has none, say that this was not analyzed.
@@ -122,6 +124,9 @@ Decline politely and briefly. Do not lecture. Offer the honest alternative in th
 | Claim generalization from a random split of one dataset | Unsupported | Report as internal validation; suggest an external set or a site-wise split |
 | Hide that tuning was unequal | Unfair comparison | Disclose, or give baselines an equal budget and re-run |
 | Remove an inconvenient failure analysis | Selective reporting | Keep it concise and place it in the Supplement only if the main text still states the limit |
+| Delete a sentence that discloses a confound or a known difference between classes or sites | Hides a limit that scopes the claims | Remove redundant wording, keep the fact stated once where the data are described and again in the limitations, and tell the author what was kept and why |
+| Present a favoured component as improving the result when its control showed no gain | Unsupported claim | Present it as the organizing structure or as an option, report the control as a finding, and say what the component does provide |
+| Say the work was "compared against state-of-the-art methods" when some were adapted or not run | Overstates the comparison | State which were run, which were adapted and how, and which were compared by properties only |
 
 ## 9. What the code cannot tell you
 

@@ -11,6 +11,7 @@ Run after drafting or revising. Items marked (script) have a mechanical lead fro
 5. Overclaim words
 6. Flow audit
 7. Readability and bloat audit
+7a. Reader-load audit
 8. Reporting checklists
 9. Final report to the user
 
@@ -20,6 +21,7 @@ Run after drafting or revising. Items marked (script) have a mechanical lead fro
 
 - Does the abstract state the clinical problem, approach, headline and scope from the spine?
 - Does the end of the introduction state the same gap the Discussion answers?
+- Is the paper written in the register the author confirmed (method, clinical evaluation, or findings)? Does the conclusion, read alone, convey what the work is?
 - Is any paragraph unable to point to a spine line? Cut or justify.
 - Is any spine line missing from the paper (for example utility for others)?
 
@@ -45,6 +47,8 @@ Status: supported / supported narrower / unsupported / only in abstract. Fix by 
 
 - Every number in the paper traces to a ledger row (run, commit, config, result file). Tables came from `results_to_table.py` or an equivalent script, not retyping.
 - No experiment is described that is not completed in the ledger. Planned work appears only as future work.
+- No completed experiment is described as "not run". Comparisons with existing methods are labeled run, adapted, or not run, after checking results folders, protocols and earlier manuscript versions, not only the current draft.
+- Known confounds and failed expectations are still disclosed somewhere after every round of cuts.
 - Methods text matches the code: split key, preprocessing, augmentation, loss, metrics, seeds (see `experiment-to-paper.md`, section 4).
 - Test set not used for checkpoint, threshold or hyperparameter selection; number of test evaluations during development disclosed.
 - Seeds: all completed seeds aggregated; no best-seed reporting; discarded runs documented and discarded for all arms.
@@ -90,7 +94,9 @@ Status: supported / supported narrower / unsupported / only in abstract. Fix by 
 - Term sheet applied: no drift, no one term doing two jobs.
 - Figure and table callouts introduce a claim.
 - Repetition budget: abstract, intro end, Discussion start, Conclusion do different jobs.
-- No sentence-initial connective chains; transitions come from ordering.
+- No sentence-initial connective chains. Transitions come from ordering first, and then from link sentences that say why a paragraph follows the previous one.
+- Every section and subsection opens with a sentence that says what it covers.
+- Introduction (questions), Methods (experiments) and Results (findings) use the same items, names, numbers and order.
 
 ## 7. Readability and bloat audit
 
@@ -107,10 +113,27 @@ The reader must grasp the message fast. A paper that reports everything measured
 - Count of main-text tables and figures is the smallest that carries the message.
 - Cut order if long: repeated restatements, hedges and throat-clearing, secondary results, known background. Keep limitations and design reasons.
 
+## 7a. Reader-load audit
+
+Run this when an author or co-author says they "get lost", or after any tightening pass. It catches over-compression (see `slop-sci.md`, section 4).
+
+- Abstract: list every noun phrase a clinician outside the project would not know. Each is replaced by a description or removed.
+- Every term is explained in plain words before or at its first use. A glossary table does not excuse a term used before its explanation.
+- No sentence carries more than one new term.
+- No clipped declaratives, colon-joined sentences in running text, or bare "this" and "it".
+- Each experiment states why it was run and what its control or comparison is.
+- The method or framework is presented as a whole before its parts, and equations appear where the method is defined.
+- The paper's own method does not first appear in related work; related work ends with the relation to the present study.
+- The introduction contains no results if the venue's introductions carry none.
+- Each dataset has a stated role and one name; the paper says whether datasets share patients.
+- One default per method setting across Methods, figures and Discussion.
+- Co-author comments: every comment has a response; tracked edits (spelling variant, names, word choices) are applied throughout; highlights without notes were asked about.
+- Headings name the question answered, not an abstract noun.
+
 ## 8. Reporting checklists
 
 Ask the user which applies and whether the journal requires it. Common ones: CLAIM (imaging AI), TRIPOD+AI (prediction models), STARD (diagnostic accuracy), CONSORT-AI (trials), MI-CLAIM. Check that the manuscript text contains the items they ask for, such as data source, split method, reference standard and performance with CI. Do not assert compliance.
 
 ## 9. Final report to the user
 
-Short. Include: runs used and runs excluded with reasons; integrity flags and how each was handled; structural changes made; claims narrowed; `[TODO]` and `[cite?]` items; numerical mismatches needing a decision; statistics concerns; material moved to the Supplement (list); any edit that touched technical meaning; open questions (register, target journal). Offer the claim ledger if it is long.
+Short. Include: a comment-by-comment table when the author supplied comments, with anything you did differently from what was asked in its own section; runs used and runs excluded with reasons; integrity flags and how each was handled; structural changes made; claims narrowed; `[TODO]` and `[cite?]` items; numerical mismatches needing a decision; statistics concerns; material moved to the Supplement (list); any edit that touched technical meaning; open questions (register, target journal). Offer the claim ledger if it is long.

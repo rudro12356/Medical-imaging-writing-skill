@@ -6,8 +6,9 @@ Adapted from stop-slop by Hardik Pandya (MIT License, Copyright (c) 2025). The o
 1. Rule status vs stop-slop
 2. Phrases to cut or replace
 3. Structures to avoid
-4. AI-draft incoherence patterns
-5. Quick replacement table
+4. Over-compression: the opposite failure
+5. AI-draft incoherence patterns
+6. Quick replacement table
 
 ---
 
@@ -81,7 +82,23 @@ Adapted from stop-slop by Hardik Pandya (MIT License, Copyright (c) 2025). The o
 - **Uniform sentence length and a three-beat rhythm** in every paragraph.
 - **Dramatic one-line paragraphs.**
 
-## 4. AI-draft incoherence patterns
+## 4. Over-compression: the opposite failure
+
+Cutting slop can go too far. A draft stripped to bare claims, short declaratives and private labels is as hard to read as an inflated one, and authors describe it as "sloppy", "incomplete sentences", "shallow" or "I get lost". Check for these after every tightening pass.
+
+- **Coined labels.** Names invented while working (for a quantity, a step, a property, a kind of map) used as if the reader knew them. Three or more in one sentence is unreadable. Replace with a description in the abstract and introduction; define once, after the plain explanation, where the term is needed.
+- **Term before explanation.** The label arrives, and its meaning arrives a paragraph later or only in a glossary table. A glossary helps locally but does not fix the order.
+- **Clipped declaratives.** "Such a dataset exists." "The results are mixed." "The study had four steps." Each depends on its neighbours for meaning. Merge it into a sentence that says what and why.
+- **Colon-joined sentences in running text.** "X is the question of this paper: Y." Write two sentences or a subordinate clause. Keep colons for lists and equations.
+- **Bare pronouns and demonstratives.** "This shows", "it fixed its design", "their features". Name the thing.
+- **Missing links.** Paragraphs that are each clear but do not say why one follows the other. Add a link sentence (see `narrative-arc.md`, flow techniques).
+- **Stacked qualifications from the audit trail.** Statements about how the study was planned, which tests were corrected, or what was prespecified, placed before the reader knows what was studied. Move them after the analyses they qualify, and say them in plain words ("we wrote down the expected result before each experiment").
+- **Abstract nouns for sections and labels.** Headings such as "Robustness", "Completeness", "The six analyses" tell the reader nothing. Use the question the section answers.
+- **Product-like names for small things.** A catchy name for a display or a helper can make the whole work look lightweight. Describe the function first; name it only if the author wants the name.
+
+The target register is plain and complete: full sentences, ordinary words, the same word for the same thing, and every step of the reasoning written down.
+
+## 5. AI-draft incoherence patterns
 
 These are the reason a draft "goes here and there". Check for them in the reverse outline.
 
@@ -97,8 +114,14 @@ These are the reason a draft "goes here and there". Check for them in the revers
 10. Limitations section of generic boilerplate (small data, more work needed) with no consequence for the claim.
 11. Each paragraph locally fine, but no paragraph answers the one before.
 12. Everything measured is reported (bloat), so the message is buried.
+13. Analyses, cohorts or tools that appear without having been introduced, so the reader "does not know when they arrived".
+14. The paper's own method first mentioned in the related-work section.
+15. Results or worked examples from the Results section used in the introduction of a journal whose introductions carry none.
+16. One default named in Methods, another shown in the figures, a third recommended in the Discussion.
+17. Datasets with overlapping names and no stated role.
+18. The contribution reduced to its smallest visible product, so the abstract and conclusion make careful work look shallow.
 
-## 5. Quick replacement table
+## 6. Quick replacement table
 
 | Slop | Replace with |
 |---|---|
@@ -111,3 +134,6 @@ These are the reason a draft "goes here and there". Check for them in the revers
 | paves the way for clinical translation | name the step still needed: "prospective validation is needed before clinical use" |
 | it is worth noting that X | X |
 | bridging the gap between | connecting; or cut |
+| a sentence built on three coined terms | the same content in ordinary words, one idea per sentence |
+| X is called Y (for your own term) | we refer to X as Y |
+| Such a dataset exists. | The [named dataset] meets this requirement, because [reason]. |
